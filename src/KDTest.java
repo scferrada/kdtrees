@@ -10,6 +10,11 @@ public class KDTest {
         Axis a = Axis.X;
         System.out.println(a.negated());
 
+        KDPoint p1 = new KDPoint(1,1);
+        KDPoint p2 = new KDPoint(2,4);
+        KDPoint p3 = new KDPoint(4,2);
+
+
 
     }
 

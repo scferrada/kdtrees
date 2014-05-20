@@ -20,12 +20,12 @@ public abstract class KDTree {
             return new KDLeaf(points.get(0));
         }
 
-        KDLine line = getLine(points, axis.negated()) ;
+        KDLine line = getLine(points, axis) ;
         List<List<KDPoint>> partition = makePartition(points,line);
 
         return new KDInternalNode(line,
-                                  constructKdtree(partition.get(0),axis),
-                                  constructKdtree(partition.get(1),axis));
+                                  constructKdtree(partition.get(0),axis.negated()),
+                                  constructKdtree(partition.get(1),axis.negated()));
 
     }
 

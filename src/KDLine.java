@@ -25,4 +25,9 @@ public class KDLine {
     public double distance(KDPoint q) {
         return Math.abs(q.getCoord(axis)-pos);
     }
+
+    @Override
+    public String toString() {
+        return ""+pos + axis;
+    }
 }

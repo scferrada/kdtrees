@@ -22,4 +22,5 @@ public abstract class KDNode {
     public abstract KDLeaf anotherSearch(KDNode currentBest, double currentDistance, KDPoint q);
 
     public abstract boolean intersects(KDPoint q, double currentDistance);
+
 }

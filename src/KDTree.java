@@ -20,7 +20,6 @@ public abstract class KDTree {
         if(points.size() == 1 ){
             return new KDLeaf(points.get(0));
         }
-
         KDLine line = getLine(points, axis) ;
         List<List<KDPoint>> partition = makePartition(points,line);
 

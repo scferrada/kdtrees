@@ -21,12 +21,16 @@ public class KDMedianTree extends KDTree {
     }
 
     private double calcMedian(List<KDPoint> points, Axis axis) {
-        int nbOfGroups = (int) Math.ceil(points.size()/5);
+        if(points.size()<5){
+            return median(points, axis);
+        }
+        int nbOfGroups = (int) Math.ceil(points.size()/5.0);
         ArrayList<Double> medians = new ArrayList<Double>();
         for(int i = 0; i<nbOfGroups; i++){
-            medians.add(median(points.subList(i*5,(i+1)*5), axis ));
+            medians.add(median(points.subList(i*5, Math.min((i+1)*5, points.size())), axis ));
         }
-        return median(medians);  //To change body of created methods use File | Settings | File Templates.
+        double finalMedian = median(medians);
+        return finalMedian;
     }
 
     private double median(List<KDPoint> kdPoints, Axis axis) {
@@ -34,7 +38,7 @@ public class KDMedianTree extends KDTree {
         for(KDPoint p : kdPoints)
             coords.add(p.getCoord(axis));
 
-        return median(coords);  //To change body of created methods use File | Settings | File Templates.
+        return median(coords);
     }
 
     private double median(ArrayList numbers) {
@@ -45,7 +49,7 @@ public class KDMedianTree extends KDTree {
             return nums[nums.length/2];
         else{
             int index = nums.length/2;
-            return nums[index-1]+nums[index]/2.0;
+            return (nums[index-1]+nums[index])/2.0;
         }
     }
 }

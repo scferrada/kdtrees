@@ -25,6 +25,10 @@ public class KDInternalNode extends KDNode {
 
     }
 
+    public KDLine getLine() {
+        return line;
+    }
+
     public KDNode getRight() {
         return right;
     }

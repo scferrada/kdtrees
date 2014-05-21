@@ -41,4 +41,9 @@ public class KDPoint {
                 return 0.0;
         }
     }
+
+    @Override
+    public String toString() {
+        return (int)x +","+ (int)y;
+    }
 }

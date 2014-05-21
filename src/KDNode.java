@@ -7,4 +7,19 @@
  */
 public abstract class KDNode {
 
+
+    protected KDInternalNode parent;
+
+    public KDNode getParent(){
+        return parent;
+    }
+
+    public abstract KDNode searchNeighbor(KDPoint q);
+
+
+    public abstract double distance(KDPoint q);
+
+    public abstract KDNode anotherSearch(KDNode currentBest, double currentDistance, KDPoint q);
+
+    public abstract boolean intersects(KDPoint q, double currentDistance);
 }

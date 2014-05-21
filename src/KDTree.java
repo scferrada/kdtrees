@@ -21,12 +21,12 @@ public abstract class KDTree {
             return new KDLeaf(points.get(0));
         }
 
-        KDLine line = getLine(points, axis.negated()) ;
+        KDLine line = getLine(points, axis) ;
         List<List<KDPoint>> partition = makePartition(points,line);
 
         return new KDInternalNode(line,
-                                  constructKdtree(partition.get(0),axis),
-                                  constructKdtree(partition.get(1),axis));
+                                  constructKdtree(partition.get(0),axis.negated()),
+                                  constructKdtree(partition.get(1),axis.negated()));
 
     }
 
@@ -48,4 +48,28 @@ public abstract class KDTree {
     }
 
     protected abstract KDLine getLine(List<KDPoint> points, Axis axis);
+
+    public KDPoint closestNeighbor(KDPoint q){
+
+        KDNode currentBest = root.searchNeighbor(q);
+        double currentDistance = currentBest.distance(q);
+
+        KDNode anotherBest = currentBest.getParent().anotherSearch(currentBest,currentDistance, q);
+
+        KDNode actual = currentBest.getParent();
+        KDNode prev = currentBest;
+
+        while(actual.getParent()!= null){
+            KDNode temp = actual.anotherSearch(prev, currentDistance,q);
+            if(temp.distance(q)<currentDistance){
+                currentBest = temp;
+                currentDistance = currentBest.distance(q);
+            }
+            prev = actual;
+            actual = actual.getParent();
+
+        }
+
+        return null;
+    }
 }

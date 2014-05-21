@@ -21,4 +21,8 @@ public class KDLine {
         this.axis = axis;
         this.pos = pos;
     }
+
+    public double distance(KDPoint q) {
+        return Math.abs(q.getCoord(axis)-pos);
+    }
 }

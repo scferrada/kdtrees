@@ -14,12 +14,12 @@ public abstract class KDNode {
         return parent;
     }
 
-    public abstract KDNode searchNeighbor(KDPoint q);
+    public abstract KDLeaf searchNeighbor(KDPoint q);
 
 
     public abstract double distance(KDPoint q);
 
-    public abstract KDNode anotherSearch(KDNode currentBest, double currentDistance, KDPoint q);
+    public abstract KDLeaf anotherSearch(KDNode currentBest, double currentDistance, KDPoint q);
 
     public abstract boolean intersects(KDPoint q, double currentDistance);
 }

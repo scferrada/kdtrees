@@ -51,25 +51,21 @@ public abstract class KDTree {
 
     public KDPoint closestNeighbor(KDPoint q){
 
-        KDNode currentBest = root.searchNeighbor(q);
+        KDLeaf currentBest = root.searchNeighbor(q);
         double currentDistance = currentBest.distance(q);
-
-        KDNode anotherBest = currentBest.getParent().anotherSearch(currentBest,currentDistance, q);
 
         KDNode actual = currentBest.getParent();
         KDNode prev = currentBest;
 
         while(actual.getParent()!= null){
-            KDNode temp = actual.anotherSearch(prev, currentDistance,q);
+            KDLeaf temp = actual.anotherSearch(prev, currentDistance,q);
             if(temp.distance(q)<currentDistance){
                 currentBest = temp;
                 currentDistance = currentBest.distance(q);
             }
             prev = actual;
             actual = actual.getParent();
-
         }
-
-        return null;
+        return currentBest.getPoint();
     }
 }

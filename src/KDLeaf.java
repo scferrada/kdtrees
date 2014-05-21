@@ -15,7 +15,7 @@ public class KDLeaf extends KDNode {
     }
 
     @Override
-    public KDNode searchNeighbor(KDPoint q) {
+    public KDLeaf searchNeighbor(KDPoint q) {
 
         return this;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -26,11 +26,11 @@ public class KDLeaf extends KDNode {
     }
 
     @Override
-    public KDNode anotherSearch(KDNode currentBest, double currentDistance, KDPoint q){
+    public KDLeaf anotherSearch(KDNode currentBest, double currentDistance, KDPoint q){
         if( point.distance(q)<currentDistance){
             return this;
         }
-        return currentBest;
+        return (KDLeaf) currentBest;
     }
 
     @Override

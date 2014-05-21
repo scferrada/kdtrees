@@ -42,7 +42,7 @@ public class KDInternalNode extends KDNode {
     }
 
     @Override
-    public KDNode searchNeighbor(KDPoint q) {
+    public KDLeaf searchNeighbor(KDPoint q) {
         if(q.getCoord(line.getAxis())<= line.getPos()){
             return left.searchNeighbor(q);
         }
@@ -56,8 +56,9 @@ public class KDInternalNode extends KDNode {
     }
 
     @Override
-    public KDNode anotherSearch(KDNode aChild, double currentDistance, KDPoint q) {
-        KDNode bestLeft =aChild, bestRight = aChild;
+    public KDLeaf anotherSearch(KDNode aChild, double currentDistance, KDPoint q) {
+        KDLeaf bestLeft = new KDLeaf(new KDPoint(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY)),
+               bestRight = new KDLeaf(new KDPoint(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY));
         if(left!=aChild && left.intersects(q,currentDistance)){
             bestLeft = left.anotherSearch(aChild, currentDistance, q);
         }
@@ -78,30 +79,41 @@ public class KDInternalNode extends KDNode {
 
         }
         double eje1 = parent.line.getPos();
-        Axis aeje1 = parent.line.getAxis();
+        Axis aeje1 = line.axis.negated();
         double eje2 = parent.parent.line.getPos();
         KDPoint vertex = new KDPoint((aeje1 == Axis.X)?eje1:eje2, (aeje1 == Axis.Y)?eje1:eje2);
 
         if(vertex.distance(q)<=currentDistance)
             return true;
 
-
-
         boolean imHigh = this == parent.right;
         boolean fatherIsHigh = parent == parent.parent.right;
 
+        // si llega a fallar, el return usar if/else respecto al axis
         if(imHigh){
             if(fatherIsHigh){
-
+               return (q.getCoord(aeje1)+currentDistance >= eje1
+                       && q.getCoord(line.getAxis())-currentDistance >= eje2) ||
+                       (q.getCoord(line.getAxis())+currentDistance >= eje2
+                       && q.getCoord(aeje1)-currentDistance >= eje1);
             }
 
+            return (q.getCoord(aeje1)-currentDistance <= eje1
+                    && q.getCoord(line.getAxis())-currentDistance >= eje2) ||
+                    (q.getCoord(line.getAxis())-currentDistance <= eje2
+                    && q.getCoord(aeje1)-currentDistance >= eje1);
+
         }else{
-            return (Math.abs(q.getCoord(line.getAxis()) - eje2) < currentDistance)
-                    && (q.getCoord(line.getAxis().negated())- currentDistance) <= eje1
+            if(fatherIsHigh){
+                return (q.getCoord(aeje1)+currentDistance >= eje1
+                        && q.getCoord(line.getAxis())+currentDistance <= eje2) ||
+                        (q.getCoord(line.getAxis())+currentDistance >= eje2
+                        && q.getCoord(aeje1)+currentDistance <= eje1);
+            }
+            return (q.getCoord(aeje1)-currentDistance <= eje1
+                    && q.getCoord(line.getAxis())+currentDistance <= eje2) ||
+                    (q.getCoord(line.getAxis())-currentDistance <= eje2
+                    && q.getCoord(aeje1)+currentDistance <= eje1);
         }
-
-
-
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
  * Time: 01:40 PM
  * To change this template use File | Settings | File Templates.
  */
+
 public abstract class KDTree {
     KDNode root;
 

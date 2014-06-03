@@ -9,8 +9,13 @@ import java.util.List;
  */
 public class KDMeanTree extends KDTree {
 
+
     protected KDMeanTree(KDNode root) {
         super(root);
+    }
+
+    public KDMeanTree() {
+        //To change body of created methods use File | Settings | File Templates.
     }
 
     @Override

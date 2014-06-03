@@ -26,10 +26,13 @@ public class KDTest {
         points.add(p3);
         points.add(p4);
         points.add(p5);
+        KDMedianTree medTree = new KDMedianTree(new KDMedianTree().constructKdtree(points, Axis.X));
+        KDMeanTree meanTree = new KDMeanTree(new KDMeanTree().constructKdtree(points, Axis.X));
+        KDTreeView.printNode(meanTree.getRoot());
+        KDTreeView.printNode(medTree.getRoot());
 
-        KDTreeView.printNode(new KDMeanTree(null).constructKdtree(points, Axis.X));
-        KDTreeView.printNode(new KDMedianTree(null).constructKdtree(points, Axis.X));
-
+        System.out.println(medTree.closestNeighbor(new KDPoint(5.1,1.6)));
+        System.out.println(meanTree.closestNeighbor(new KDPoint(5.1,1.6)));
     }
 
 }

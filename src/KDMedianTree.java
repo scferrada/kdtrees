@@ -15,6 +15,10 @@ public class KDMedianTree extends KDTree {
         super(root);
     }
 
+    public KDMedianTree() {
+        //To change body of created methods use File | Settings | File Templates.
+    }
+
     @Override
     protected KDLine getLine(List<KDPoint> points, Axis axis) {
         return new KDLine(axis, calcMedian(points, axis));  //To change body of implemented methods use File | Settings | File Templates.
@@ -52,4 +56,5 @@ public class KDMedianTree extends KDTree {
             return (nums[index-1]+nums[index])/2.0;
         }
     }
+
 }

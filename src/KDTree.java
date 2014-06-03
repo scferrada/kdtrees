@@ -12,6 +12,8 @@ import java.util.List;
 public abstract class KDTree {
     KDNode root;
 
+    protected KDTree(){}
+
     protected KDTree(KDNode root) {
         this.root = root;
     }
@@ -56,7 +58,7 @@ public abstract class KDTree {
         KDNode actual = currentBest.getParent();
         KDNode prev = currentBest;
 
-        while(actual.getParent()!= null){
+        while(actual!= null){
             KDLeaf temp = actual.anotherSearch(prev, currentDistance,q);
             if(temp.distance(q)<currentDistance){
                 currentBest = temp;
@@ -66,5 +68,9 @@ public abstract class KDTree {
             actual = actual.getParent();
         }
         return currentBest.getPoint();
+    }
+
+    public KDNode getRoot() {
+        return root;
     }
 }

@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 public class KDLeaf extends KDNode {
-    private KDPoint point;
+    protected KDPoint point;
 
 
 
@@ -30,7 +30,7 @@ public class KDLeaf extends KDNode {
         if( point.distance(q)<currentDistance){
             return this;
         }
-        return (KDLeaf) currentBest;
+        return new KDNullNode(null);
     }
 
     @Override

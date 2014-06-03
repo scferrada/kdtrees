@@ -32,7 +32,7 @@ public class KDExperiment {
             }
 
             while(!b){ //change to while error is higher than 5%
-                KDPoint query = KDPointGenerator.randomQueryPoint(N);
+                KDPoint query = KDPointGenerator.randomQueryPoint(C, N);
 
                 //Measure time for every query
                 randomMeanTree.closestNeighbor(query);

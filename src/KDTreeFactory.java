@@ -9,10 +9,10 @@ import java.util.List;
  */
 public class KDTreeFactory {
     public static KDTree makeMeanTreeWith(List<KDPoint> points) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return new KDMeanTree(new KDMeanTree().constructKdtree(points, Axis.X));
     }
 
     public static KDTree makeMedianTreeWith(List<KDPoint> points) {
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        return new KDMedianTree(new KDMedianTree().constructKdtree(points, Axis.X));
     }
 }

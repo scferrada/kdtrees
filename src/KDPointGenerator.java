@@ -12,12 +12,8 @@ import java.util.Random;
 public class KDPointGenerator {
     public static List<KDPoint> randomPoints(int c, int n) {
         List<KDPoint> points = new ArrayList<KDPoint>();
-        Random r = new Random();
-        double end = c * Math.sqrt(n);
         for (int i=0; i<n; i++){
-            double x = end * r.nextDouble();
-            double y = end * r.nextDouble();
-            points.add(new KDPoint(x, y));
+            points.add(randomQueryPoint(c, n));
         }
         return points;
     }
@@ -26,7 +22,11 @@ public class KDPointGenerator {
         return null;
     }
 
-    public static KDPoint randomQueryPoint(int n) {
-        return null;
+    public static KDPoint randomQueryPoint(int c, int n) {
+        Random r = new Random();
+        double end = c * Math.sqrt(n);
+        double x = end * r.nextDouble();
+        double y = end * r.nextDouble();
+        return new KDPoint(x, y);
     }
 }

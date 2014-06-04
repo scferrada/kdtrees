@@ -19,7 +19,13 @@ public class KDPointGenerator {
     }
 
     public static List<KDPoint> lowDiscrepancyPoints(int c, int n) {
-        return null;
+        Halton halton = new Halton();
+        List<KDPoint> points = new ArrayList<KDPoint>();
+        for (int i=0; i<n; i++){
+            halton.inc();  //:) :D
+            points.add(halton.getValues().scaleBy(c*Math.sqrt(n)));
+        }
+        return points;
     }
 
     public static KDPoint randomQueryPoint(int c, int n) {

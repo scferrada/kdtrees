@@ -33,6 +33,21 @@ public class KDTest {
 
         System.out.println(medTree.closestNeighbor(new KDPoint(5.1,1.6)));
         System.out.println(meanTree.closestNeighbor(new KDPoint(5.1,1.6)));
+        Halton halton = new Halton();
+       /* System.out.println(halton.getValues());
+        for(int k = 0; k<100; k++){
+            halton.inc();  //:) :D
+            System.out.println(halton.getValues());
+        } */
+        List<KDPoint> pointsr = KDPointGenerator.randomPoints(1, 100);
+        for(int k = 0; k<100; k++){
+
+            System.out.println(pointsr.get(k));
+        }
+
+
+
+
     }
 
 }

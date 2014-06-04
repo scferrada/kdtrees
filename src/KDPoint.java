@@ -46,4 +46,8 @@ public class KDPoint {
     public String toString() {
         return x +","+ y;
     }
+
+    public KDPoint scaleBy(double v) {
+        return new KDPoint(x*v,y*v);  //To change body of created methods use File | Settings | File Templates.
+    }
 }

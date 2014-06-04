@@ -23,4 +23,7 @@ public abstract class KDNode {
 
     public abstract boolean intersects(KDPoint q, double currentDistance);
 
+    public abstract int height();
+
+    public abstract int usedSpace();
 }

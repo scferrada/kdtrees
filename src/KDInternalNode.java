@@ -120,4 +120,19 @@ public class KDInternalNode extends KDNode {
                     && q.getCoord(aeje1)+currentDistance <= eje1);
         }
     }
+
+    @Override
+    public int height() {
+        return 1 +  Math.max(left.height(), right.height());
+    }
+
+    @Override
+    public int usedSpace() {
+        return space() + left.usedSpace() + right.usedSpace();
+
+    }
+
+    private int space() {
+        return 41;
+    }
 }

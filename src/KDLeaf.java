@@ -6,9 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 public class KDLeaf extends KDNode {
+
     protected KDPoint point;
-
-
 
     public KDLeaf(KDPoint point) {
         this.point = point;
@@ -36,6 +35,16 @@ public class KDLeaf extends KDNode {
     @Override
     public boolean intersects(KDPoint q, double currentDistance) {
         return point.distance(q)<=currentDistance;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public int height() {
+        return 1;
+    }
+
+    @Override
+    public int usedSpace() {
+        return 32;
     }
 
 

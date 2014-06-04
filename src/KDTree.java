@@ -31,6 +31,14 @@ public abstract class KDTree {
 
     }
 
+    public int height(){
+        return root.height();
+    }
+
+    public int usedSpace(){
+        return root.usedSpace();
+    }
+
     private List<List<KDPoint>> makePartition(List<KDPoint> points, KDLine line) {
         List<KDPoint> low = new LinkedList<KDPoint>();
         List<KDPoint> high = new LinkedList<KDPoint>();

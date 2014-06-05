@@ -1,6 +1,12 @@
 *.iml
 *.iws
 *.ipr
+*.aux
+*.lof
+*.log
+*.out
+*.gz
+*.toc
 out/
 
 /bin

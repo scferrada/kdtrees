@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class KDExperiment {
 
-    static private final int C = 5;
+    static private final double C = 0.3;
     static private List<Long> medTreeConsTimesR = new ArrayList<Long>();
     static private List<Long> medTreeConsTimesL = new ArrayList<Long>();
     static private List<Long> meanTreeConsTimesR = new ArrayList<Long>();
@@ -73,7 +73,7 @@ public class KDExperiment {
 
 
     static public void main(String[] args){
-        for(int i=10; i<=20; i++){
+        for(int i=8; i<=20; i++){
             int N = (int) Math.pow(2, i);
             List<KDPoint> randomPoints;
             List<KDPoint> lowDiscrepancyPoints;
@@ -82,7 +82,8 @@ public class KDExperiment {
 
             //Tree Construction
             Long start, end;
-            while(firstStageErrorsAreOver5()){ //change to while error is higher than 5%
+            boolean first = true;
+            while(first || firstStageErrorsAreOver5()){ //change to while error is higher than 5%
                 randomPoints = KDPointGenerator.randomPoints(C, N);
                 lowDiscrepancyPoints = KDPointGenerator.lowDiscrepancyPoints(C, N);
 
@@ -111,15 +112,15 @@ public class KDExperiment {
                 start = System.nanoTime();
                 lowDMedianTree = KDTreeFactory.makeMedianTreeWith(lowDiscrepancyPoints);
                 end = System.nanoTime();
+                System.out.println(end - start);
                 medTreeConsTimesL.add(end - start);
                 medTreeHeightsL.add(lowDMedianTree.height());
                 medTreeSpacesL.add(lowDMedianTree.usedSpace());
-
-                //calculate standard deviation
+                first = false;
             }
             writeFirstStageFiles(N);
-
-            while(secondStageErrorsAreOver5()){ //change to while error is higher than 5%
+            first = true;
+            while(first || secondStageErrorsAreOver5()){ //change to while error is higher than 5%
                 KDPoint query = KDPointGenerator.randomQueryPoint(C, N);
 
                 //Measure time for every query
@@ -142,6 +143,7 @@ public class KDExperiment {
                 lowDMedianTree.closestNeighbor(query);
                 end = System.nanoTime();
                 medTreeLQueryTimes.add(end - start);
+                first = false;
             }
             writeSecondStageFiles(N);
         }

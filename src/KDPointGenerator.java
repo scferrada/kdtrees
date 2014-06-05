@@ -10,7 +10,7 @@ import java.util.Random;
  * To change this template use File | Settings | File Templates.
  */
 public class KDPointGenerator {
-    public static List<KDPoint> randomPoints(int c, int n) {
+    public static List<KDPoint> randomPoints(double c, int n) {
         List<KDPoint> points = new ArrayList<KDPoint>();
         for (int i=0; i<n; i++){
             points.add(randomQueryPoint(c, n));
@@ -18,7 +18,7 @@ public class KDPointGenerator {
         return points;
     }
 
-    public static List<KDPoint> lowDiscrepancyPoints(int c, int n) {
+    public static List<KDPoint> lowDiscrepancyPoints(double c, int n) {
         Halton halton = new Halton();
         List<KDPoint> points = new ArrayList<KDPoint>();
         for (int i=0; i<n; i++){
@@ -28,7 +28,7 @@ public class KDPointGenerator {
         return points;
     }
 
-    public static KDPoint randomQueryPoint(int c, int n) {
+    public static KDPoint randomQueryPoint(double c, int n) {
         Random r = new Random();
         double end = c * Math.sqrt(n);
         double x = end * r.nextDouble();

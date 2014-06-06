@@ -39,7 +39,7 @@ public abstract class KDTree {
         return root.usedSpace();
     }
 
-    private List<List<KDPoint>> makePartition(List<KDPoint> points, KDLine line) {
+    protected List<List<KDPoint>> makePartition(List<KDPoint> points, KDLine line) {
         List<KDPoint> low = new LinkedList<KDPoint>();
         List<KDPoint> high = new LinkedList<KDPoint>();
 

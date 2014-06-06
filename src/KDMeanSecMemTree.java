@@ -9,4 +9,25 @@ import java.util.List;
  */
 public class KDMeanSecMemTree extends KDMeanTree {
 
+    private String filename;
+
+    public KDMeanSecMemTree(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
+    public KDNode constructKdtree(List<KDPoint> points, Axis axis){
+        if(points.size() == 1 ){
+            return new KDLeaf(points.get(0));
+        }
+        KDLine line = getLine(points, axis) ;
+        List<List<KDPoint>> partition = makePartition(points,line);
+
+        return new KDInternalNode(line,
+                constructKdtree(partition.get(0),axis.negated()),
+                constructKdtree(partition.get(1),axis.negated()));
+    }
+
+
 }
+

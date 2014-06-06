@@ -73,7 +73,7 @@ public class KDExperiment {
 
 
     static public void main(String[] args){
-        for(int i=8; i<=20; i++){
+        for(int i=8; i<=15; i++){
             int N = (int) Math.pow(2, i);
             List<KDPoint> randomPoints;
             List<KDPoint> lowDiscrepancyPoints;
@@ -82,8 +82,12 @@ public class KDExperiment {
 
             //Tree Construction
             Long start, end;
-            boolean first = true;
-            while(first || firstStageErrorsAreOver5()){ //change to while error is higher than 5%
+            int first = 1;
+            boolean doIt = true;
+            while( first<10 && doIt ){ //change to while error is higher than 5%
+
+                if (first>3)
+                    doIt = firstStageErrorsAreOver5();
                 randomPoints = KDPointGenerator.randomPoints(C, N);
                 lowDiscrepancyPoints = KDPointGenerator.lowDiscrepancyPoints(C, N);
 
@@ -112,17 +116,19 @@ public class KDExperiment {
                 start = System.nanoTime();
                 lowDMedianTree = KDTreeFactory.makeMedianTreeWith(lowDiscrepancyPoints);
                 end = System.nanoTime();
-                System.out.println(end - start);
                 medTreeConsTimesL.add(end - start);
                 medTreeHeightsL.add(lowDMedianTree.height());
                 medTreeSpacesL.add(lowDMedianTree.usedSpace());
-                first = false;
+                first++;
             }
             writeFirstStageFiles(N);
-            first = true;
-            while(first || secondStageErrorsAreOver5()){ //change to while error is higher than 5%
-                KDPoint query = KDPointGenerator.randomQueryPoint(C, N);
+            first = 1;
+            doIt = true;
+            while(first<10 && doIt){ //change to while error is higher than 5%
 
+                if(first>3)
+                    doIt = secondStageErrorsAreOver5();
+                KDPoint query = KDPointGenerator.randomQueryPoint(C, N);
                 //Measure time for every query
                 start = System.nanoTime();
                 randomMeanTree.closestNeighbor(query);
@@ -143,7 +149,7 @@ public class KDExperiment {
                 lowDMedianTree.closestNeighbor(query);
                 end = System.nanoTime();
                 medTreeLQueryTimes.add(end - start);
-                first = false;
+                first++;
             }
             writeSecondStageFiles(N);
         }
@@ -170,25 +176,25 @@ public class KDExperiment {
     }
 
     private static void writeSecondStageFiles(int N) {
-        medRQueryTimeFile.println(N+";"+mean(medTreeRQueryTimes));
-        medLQueryTimeFile.println(N+";"+mean(medTreeLQueryTimes));
-        meanRQueryTimeFile.println(N+";"+mean(meanTreeRQueryTimes));
-        meanLQueryTimeFile.println(N+";"+mean(meanTreeLQueryTimes));
+        medRQueryTimeFile.print(mean(medTreeRQueryTimes)+ " ");
+        medLQueryTimeFile.print(mean(medTreeLQueryTimes)+ " ");
+        meanRQueryTimeFile.print(mean(meanTreeRQueryTimes)+ " ");
+        meanLQueryTimeFile.print(mean(meanTreeLQueryTimes)+ " ");
     }
 
     private static void writeFirstStageFiles(int N) {
-        medRConsTimeFile.println(N+";"+mean(medTreeConsTimesR));
-        medLConsTimeFile.println(N+";"+mean(medTreeConsTimesL));
-        meanRConsTimeFile.println(N+";"+mean(meanTreeConsTimesR));
-        meanLConsTimeFile.println(N+";"+mean(meanTreeConsTimesL));
-        medRHeightsFile.println(N+";"+mean(medTreeHeightsR, 1));
-        medLHeightsFile.println(N+";"+mean(medTreeHeightsL, 1));
-        meanRHeightsFile.println(N+";"+mean(meanTreeHeightsR, 1));
-        meanLHeightsFile.println(N+";"+mean(meanTreeHeightsL, 1));
-        medRSpacesFile.println(N+";"+mean(medTreeSpacesR, 1));
-        medLSpacesFile.println(N+";"+mean(medTreeSpacesL, 1));
-        meanRSpacesFile.println(N+";"+mean(meanTreeSpacesR, 1));
-        meanLSpacesFile.println(N+";"+mean(meanTreeSpacesL, 1));
+        medRConsTimeFile.print(mean(medTreeConsTimesR)+ " ");
+        medLConsTimeFile.print(mean(medTreeConsTimesL)+ " ");
+        meanRConsTimeFile.print(mean(meanTreeConsTimesR)+ " ");
+        meanLConsTimeFile.print(mean(meanTreeConsTimesL)+ " ");
+        medRHeightsFile.print(mean(medTreeHeightsR, 1)+ " ");
+        medLHeightsFile.print(mean(medTreeHeightsL, 1)+ " ");
+        meanRHeightsFile.print(mean(meanTreeHeightsR, 1)+ " ");
+        meanLHeightsFile.print(mean(meanTreeHeightsL, 1)+ " ");
+        medRSpacesFile.print(mean(medTreeSpacesR, 1)+ " ");
+        medLSpacesFile.print(mean(medTreeSpacesL, 1)+ " ");
+        meanRSpacesFile.print(mean(meanTreeSpacesR, 1)+ " ");
+        meanLSpacesFile.print(mean(meanTreeSpacesL, 1)+ " ");
     }
 
     private static void closeWriteStreams() {

@@ -66,7 +66,6 @@ Auxiliar: & Miguel Romero\\
 Ayudantes: & Javiera Born\\
 & Giselle Font\\
 & \today\\
-& Santiago, Chile.
 \end{tabular}
 \end{flushright}
 
@@ -81,7 +80,7 @@ Ayudantes: & Javiera Born\\
 \fancyhead[R]{\small \rm \textbf{\thepage}} %Derecha
 
 
-\fancyfoot[C]{\small \rm \textit{Algoritmos de Ordenamiento\\}} %Izquierda
+\fancyfoot[C]{\small \rm \textit{KD-Trees\\}} %Izquierda
 %\fancyfoot[R]{\small \rm \textit{Pie de página - Derecha}} %Derecha
 %\fancyfoot[C]{\thepage} %Centro
 
@@ -105,100 +104,101 @@ Ayudantes: & Javiera Born\\
 \section{Introducción}
 
 % ----- Texto Introducción------
-En el presente informe se pretende mostrar un análisis sobre la performance de diferentes algoritmos clásicos de ordenamiento, sometiéndolos a diversos experimentos para comparar así la cantidad de comparaciones esperadas con las efectuadas por los algoritmos al ordenar arreglos de diferentes tamaños y con distintas topologías, para luego relacionarlas con el tiempo que toma en ejecutarse.
+En el presente informe se pretende mostrar un análisis sobre la performance de la construcción y consultas a Árboles KD, los cuales alojan puntos del plano y los organizan de forma tal que se pueda consultar fácilmente por el vecino más cercano a un punto dado.
+Este problema de vecino más cercano es particularmente útil, por ejemplo, si se tiene una cadena de locales de pizza, saber desde qué local despachar la pizza, dada una dirección de pedido.\\
+La idea es, dado un conjunto de puntos, particionarlos según una recta  $x=c$. El valor de la constante de la recta, $c$, puede ser la media aritmética o la mediana entre las coordenadas $x$ de los puntos. Particionamos el conjunto de puntos según si están a la derecha o a la izquerda de la recta y proseguimos recursivamente particionando los dos conjuntos obtenidos, pero esta vez, particionando respecto a una recta $y=c'$.\\
+Se estudiarán los tiempos de construcción, altura del árbol construído, espacio utilizado por el árbol y el tiempo que toma una consulta sobre el árbol en 4 situaciones concretas, dadas por las combinaciones entre árbol que particiona por mediana o árbol que particiona por media y puntos aleatorios o puntos de baja discrepancia.
 % ----------------------------------
 
 \subsection{Hipótesis}
 \begin{enumerate}
-\item Se espera que Bubblesort sobre un arreglo aleatoriamente desordenado tome $n^\circ$ inversiones $\cdot$ largo del arreglo $+$ operaciones swap. La cantidad esperada de inversiones es de orden $N$ al igual que el largo del arreglo, luego esperamos que requiera aproximadamente $N^2$ comparaciones y un tiempo proporcional a eso.
-\item Por otro lado, si el arreglo está casi ordenado, se espera que la cantidad de comparaciones disminuya dramáticamente hasta $n^\circ$ inversiones $\cdot N$ e incluso mejor.
-\item Se espera que Insetionsort, que toma $O(n)$ comparaciones, en un arreglo aleatorio tome muchas menos, cerca de $\frac{3}{4}N^2$. Y que sea de $O(n + n^\circ inversiones)$ en el caso casi ordenado. Tomando en ambos casos un tiempo mucho menor que Bubblesort.
-\item En el caso de Quicksort, esperamos que al seleccionar el pivote al azar, los casos aleatorio y casi ordenado no presenten grandes diferencias de performance, siendo ambos $O(nlog(n))$. Cabe decir que al seleccionar determinísticamente un pivote, provoca la aparición de peores casos, elevando la complejidad del algoritmo hasta $O(n^2)$.
-\item Para mergesort, en cualquier caso se espera que para el caso aleatorio, la cantidad de comparaciones vaya con el caso promedio teórico $nlog(n) - n + O(log(n))$, pero en tiempo se espera que sea levemente mayor, esto por la cantidad extra de escrituras/lecturas a memoria que causan las copias de los sub arreglos en las llamadas recursivas.
+\item Se espera que la altura de los árboles sea $O(\log(n))$, pues cada árbol intentará particionar el conjunto de puntos en dos mitades con la misma cantidad de elementos cada una.
+\item Dado lo anterior, se espera que la construcción tome tiempo $O(n\log(n))$, pues recorremos los $n$ puntos en los $\log(n)$. niveles que se espera tener.
+\item Dada la topología de la estructura, se espera que las consultas de vecino más cercano, se ejecuten en tiempo $O(\log(n))$.
+\item Además, se espera que el espacio utilizado por el árbol no sea superior a $O(n)$.
+\item Dado que tanto la media, como la mediana son medidas de centralización casi igualmente certeras, no se espera que la elección de uno por sobre el otro cause diferencias importantes en cuanto a la eficiencia de la construcción del árbol o del balanceo de la estructura resultante, lo que implica que tampoco habría una optimización en el tiempo de consulta ni en la altura del árbol ni en el espacio utilizado.
+\item El tener puntos de baja discrepancia, se espera que nos permita descartar ramas completas del árbol en el segundo recorrido en la consulta de punto más cercano, pues hay una menor probabilidad de intersección/colisión respecto a una distribución aleatoria de puntos, por lo que se espera que las consultas en árboles construidos sobre puntos de baja discrepancia sean más rápidas.
+\item Claramente, los experimentos en memoria secundaria demorarán mayor tiempo en ejecutarse, con $O(n)$ accesos a disco, en promedio durante la construcción del árbol ($n$ escrituras) y cantidad logarítmica de accesos para la búsqueda (Asumiendo un nodo por bloque, sin buffer).
 \end{enumerate}
 
 \subsection{Ambiente Operacional}
-Acá Claudin habla de su computador!!
+Los experimentos fueron ejecutados en un Notebook con Sistema Operativo Windows 8 de 64 bits, 8 Gb de
+memoria RAM y procesador intel Core i7 de 3.630 GHz. Para la implementación se utilizó el Java Development Kit v1.7.
 
 \newpage
-\section{Diseño de Algoritmos y Experimentos}
-Los cuatro algoritmos fueron implementados en sus formas clásicas y están disponibles en dos versiones, una que cuenta la cantidad de comparaciones que realiza y otra que no, para así medir el tiempo y la cantidad de comparaciones de forma independiente.
+\section{Diseño de la Estructura y Experimentos}
+El diseño con el que se implementó la estructura, es bastante clásico, un árbol que contiene una raíz, un nodo, y una serie de nodos que guardan punteros a sus hijos y un valor, el cual puede ser una recta divisoria o el valor de un punto, propiamente tal.
 
-\subsection{Bubble Sort}
+\subsection{Estructura del Árbol}
+Un árbol tiene un nodo raíz, sabe como construirse a partir de un set de puntos y es capaz de recibir consultas de vecino más cercano a un punto. Este árbol debe ``decidir'' cómo particionar los nodos, es por esto que se crearon dos tipos de árboles, un árbol que particiona por mediana y otro por media aritmética. Entonces usando un Template Pattern, el árbol KD genérico sabe cómo construirse y son los hijos los que definen el criterio para seleccionar la recta de partición, según el siguiente diagrama de clases:
 
-% -----Explicación de cómo funciona Bubble Sort-------
-Bubblesort, recorre el arreglo, llevando cada vez a uno o más elementos hasta lo más alto que puedan llegar en el orden final. Repite el procedimiento hasta que logra recorrer el arreglo sin detectar ninguna inversión. A continuación, la implementación de este algoritmo:
+\begin{figure}[ht!]
+ \centering
+\fbox{\includegraphics[scale=0.85]{img/TreeStructure.png}}
+ \caption{UML para las clases que implementan la estructura}
+\end{figure}
+
+Por otro lado, son Nodos quienes guardan la información del árbol, pues este solo tiene un puntero al nodo raíz. Hay nodos de dos tipos, los internos guardan las rectas que particionan el espacio y las hojas guardan la información de los puntos, por lo que se tiene el siguente diagrama de clases:
+
+\begin{figure}[ht!]
+ \centering
+\fbox{\includegraphics[scale=0.7]{img/nodeStructure.png}}
+ \caption{UML para las clases que implementan los nodos}
+\end{figure}
+\newpage
+Los nodos también son los responsables de recorrer el árbol durante las consultas, hacia los hijos y hacia el padre, además son los que calculan la intersección entre los sectores que delimitan y el círculo de consulta.
+
+\subsection{Construcción del Árbol}
+
+% -----Explicación de cómo funciona la construcción-------
+La construcción se hace recursivamente, con caso base un conjunto de puntos de tamaño $1$. En cada fase se particiona el conjunto de acuerdo al criterio de mediana o media, intercalando el eje en cada nivel. El código es bastante simple y se presenta a continuación:
 \begin{lstlisting}
-static public int[] sort(int[] A){
-        boolean isSorted = false;
-        while (!isSorted){
-            isSorted = true;
-            for(int i=0; i<A.length-1; i++){
-                if(A[i]>A[i+1]){
-                    swap(A, i, i+1);
-                    isSorted = false;}
-            }
+public KDNode constructKdtree(List<KDPoint> points, Axis axis){
+        if(points.size() == 1 ){
+            return new KDLeaf(points.get(0));
         }
-        return A;
-}
+        KDLine line = getLine(points, axis) ; //This line depends on the Tree citeria
+        List<List<KDPoint>> partition = makePartition(points,line);
+        return new KDInternalNode(line,
+                                  constructKdtree(partition.get(0),axis.negated()),
+                                  constructKdtree(partition.get(1),axis.negated()));
+    } 
 \end{lstlisting}
+
+Las diferentes implementaciones de getLine y el método partition pueden encontrarse en los anexos
 % -------------------------------------------------------------
 
-\subsection{Insertion Sort}
+\subsection{Consultas de Vecino más cercano}
 
-% -----Explicación de cómo funciona Insertion Sort------
-El ordenamiento por inserción mantiene siempre el siguiente invariante: al ordenar el elemento en la posición $A_j$ el arreglo $A[1, j-1]$ ya está ordenado. Luego, debe buscar la posición de $A_j$ hacia su izquierda. Acá la implementación:
+% -----Explicación de cómo funcionan las consultas------
+Las consultas buscan descendentemente desde la raíz, el nodo del cuadrante que incluye al punto de consultas. Recordemos que el árbol crea una suerte de rejilla sobre el espacio, entonces la primera búsqueda le indica cual es el cuadrante del punto consultado y se calcula la distancia entre este y el punto del árbol de ese cuadrante.\\
+Con esta distancia volvemos a subir por el árbol y vemos si el cuadrante que enmarca el otro hijo del nodo intersecta el circulo con centro el punto de consulta y radio la distancia que tenemos guardada. Así vamos subiendo y si encontramos alguna distancia mejor, la guardamos. Este comportamiento se registra en el siguiente código:
+\newpage
 \begin{lstlisting}
-static public int[] sort(int[] A){
-        for(int i=1; i<A.length; i++){
-            for(int j=i-1; j>=0 && A[i]<A[j]; j--){
-                swap(A, i, j);
-                i--;
-            }
+public KDPoint closestNeighbor(KDPoint q){
+    KDLeaf currentBest = root.searchNeighbor(q);//looks for node, same sector than q
+    double currentDistance = currentBest.distance(q);
+    KDNode actual = currentBest.getParent();
+    KDNode prev = currentBest;  
+    
+    while(actual!= null){
+        KDLeaf temp = actual.anotherSearch(prev, currentDistance,q); //looks for a best fit
+        if(temp.distance(q)<currentDistance){
+            currentBest = temp;
+            currentDistance = currentBest.distance(q);
         }
-        return A;
+        prev = actual;
+        actual = actual.getParent();
+   }
+   return currentBest.getPoint();
 }
 \end{lstlisting}
 
-% ---------------------------------------------------------------
-
-\subsection{Merge Sort}
-
-% -----Explicación de cómo funciona Merge Sort-------
-El algoritmo de ordenamiento por mezcla, utiliza dividir para reinar, dividiendo el arreglo en dos, ordenando cada mitad y luego mezclando los resultados. La división del arreglo ocurre hasta llegar a sub arreglos de tamaño 1. A continuación se presenta el cuerpo del algoritmo, la función de mezcla puede encontrarse como anexo:
-\begin{lstlisting}
-static public int[] sort(int[] A) {
-        if(A.length == 1) return A;
-        int mid = A.length/2;
-        int[] A1 = Arrays.copyOfRange(A, 0, mid);
-        int[] A2 = Arrays.copyOfRange(A, mid, A.length);
-        return merge(sort(A1), sort(A2));
-}
-\end{lstlisting}
-% -------------------------------------------------------------
-
-\subsection{Quicksort}
-
-% -----Explicación de cómo funciona Quick Sort--------
-El algoritmo Quicksort, se basa en escojer un pivote al azar dentro del arreglo y particionarlo entre los elementos mayores y los menores a este pivote. Esto se repite recursivamente hasta que las particiones tienen tamaño 1. A continuación se presenta el esqueleto de la implementación, la función de particionamiento puede ser encontrada en los anexos:
-\begin{lstlisting}
-static public int[] sort(int[] A){
-        return quicksort(A, 0, A.length-1);
-}
-
-private static int[] quicksort(int[] A, int start, int end) {
-        if(end-start<1) return A;
-        int mid = partition(A,start, end);
-        quicksort(A, start, mid);
-        quicksort(A, mid+1, end);
-        return A;
-}
-\end{lstlisting}
-
+Los métodos searchNeighbot y anotherSearch se pueden encontrar en los anexos
 % -------------------------------------------------------------
 \newpage
 \subsection{Diseño de los Experimentos}
-Los experimentos consistieron en someter a los algoritmos a ordenar arreglos sucesivamente más grandes (tamaño $2^i,\.i\in\{11, ..., 20\}$) y medir su tiempo (en nanosegundos) y cantidad de comparaciones promedio, usando las dos versiones de cada algoritmo, para no afectar la performance debido al conteo. Cada experimento se repite las veces necesarias para que el error sea menor al 5\% (i.e., hasta que $\frac{stdv}{mean}\leq 0.05$). Para detalles de la implementación de la batería de experimentos, referirse al código fuente adjunto.
+Los experimentos consistieron en construir árboles KD con arreglos de puntos de tamaños sucesivamente más grandes (tamaño $2i$, $i\in\{10,...,20\}$ en las diferentes combinaciones de criterio de partición y de distribución de puntos y medimos su tiempo, la altura del árbol y la cantidad de espacio en memoria que utiliza. Luego a cada sabor de árbol le hacemos consultas y medimos el tiempo que toma en contestar. Cada experimento se repite las veces necesarias para que el error sea menor al 5\% (i.e., hasta que $\frac{stdv}{mean}\leq 0.05$). Para detalles de la implementación de la batería de experimentos, referirse al código fuente adjunto.
 
 \newpage
 \section{Resultados}

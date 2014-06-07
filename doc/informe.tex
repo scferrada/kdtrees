@@ -198,15 +198,77 @@ Los métodos searchNeighbot y anotherSearch se pueden encontrar en los anexos
 % -------------------------------------------------------------
 \newpage
 \subsection{Diseño de los Experimentos}
-Los experimentos consistieron en construir árboles KD con arreglos de puntos de tamaños sucesivamente más grandes (tamaño $2i$, $i\in\{10,...,20\}$ en las diferentes combinaciones de criterio de partición y de distribución de puntos y medimos su tiempo, la altura del árbol y la cantidad de espacio en memoria que utiliza. Luego a cada sabor de árbol le hacemos consultas y medimos el tiempo que toma en contestar. Cada experimento se repite las veces necesarias para que el error sea menor al 5\% (i.e., hasta que $\frac{stdv}{mean}\leq 0.05$). Para detalles de la implementación de la batería de experimentos, referirse al código fuente adjunto.
+Los experimentos consistieron en construir árboles KD con arreglos de puntos de tamaños sucesivamente más grandes (tamaño $2^i$, $i\in\{10,...,20\}$ en las diferentes combinaciones de criterio de partición y de distribución de puntos y medimos su tiempo, la altura del árbol y la cantidad de espacio en memoria que utiliza. Luego a cada sabor de árbol se le realizan consultas y se mide el tiempo que demora en contestar. Cada experimento se repite las veces necesarias para que el error sea menor al 5\% (i.e., hasta que $\frac{stdv}{mean}\leq 0.05$). Para detalles de la implementación de la batería de experimentos, referirse al código fuente adjunto.
 
 \newpage
 \section{Resultados}
-very successful
+Los diferentes criterios de partición y tipo de distribución de puntos nos generaban 4 instancias de análisis para cada parámetro a medir.
+
+\subsection{Tiempo de construcción}
+El experimento consistía en cuánto demoraba en ser contruído el árbol. Los resultados se pueden visualizar en el siguiente gráfico:
+
+\begin{figure}[ht!]
+ \centering
+\fbox{\includegraphics[scale=0.5]{img/ConstructTime.png}}
+ \caption{Tiempo de construcción de los KDTrees}
+\end{figure}
+
+ \begin{figure}[ht!] \centering
+ \subfloat[Mean]{\includegraphics[scale=0.3]{img//ConstructTime1.png}}
+ \subfloat[Median]{\includegraphics[scale=0.3]{img//ConstructTime2.png}}
+ \caption{Tiempo de construcción}\label{holaquetal}
+ \end{figure}
+
+A simple vista podemos confundir el orden de construcción, pero analizando por separado podemos decir que el tiempo de construcción es del orden de $O(n log(n))$.
+
+
+\newpage
+\subsection{Altura}
+El experimento consistía en calcular la altura que alcanzaban los KDTrees de un tamaño determinado. Los resultados se pueden visualizar en el siguiente gráfico:
+
+\begin{figure}[ht!]
+ \centering
+\fbox{\includegraphics[scale=0.7]{img/height.png}}
+ \caption{Altura de los KDTrees}
+\end{figure}
+
+Claramente podemos apreciar que las alturas de los árboles son del orden de $O(log(n))$, destacando que los árboles con puntos distribuidos de manera uniforme tienen una altura mas baja en comparación a los árboles de distribución aleatoria.
+\newpage
+\subsection{Tiempo de consulta}
+El experimento consistía en medir cuánto demoraban en encontrar los vecinos más cercanos de una serie de puntos. Los resultados se pueden visualizar en el siguiente gráfico:
+
+\begin{figure}[ht!]
+ \centering
+\fbox{\includegraphics[scale=0.6]{img/QueryTime.png}}
+ \caption{Tiempo de consulta de los KDTrees}
+\end{figure}
+
+Se puede apreciar que el tiempo de consulta es del orden $O(log(n))$, también se puede visualizar que los puntos de baja discrepancia demoran un poco menos en comparación a los puntos aleatorios.
+
+\newpage
+\subsection{ Espacio de un KDTree} 
+El experimento consistía en saber cuánto espacio ocupa cada KDTree, se usaron valores constantes en bytes para cada nodo. 
+
+\begin{figure}[ht!]
+ \centering
+\fbox{\includegraphics[scale=0.6]{img/Space.png}}
+ \caption{Espacio ocupado por los KDTrees}
+\end{figure}
+
+Podemos ver que el tamaño de un KDTree es del orden $O(n)$ y además que para cada tipo de KDTree el tamaño ocupado es el mismo, esto se debe a que se insertan la misma cantidad de nodos y no existen estructuras externas.
+
+
 
 \newpage
 \section{Conclusiones}
-wow
+\begin{enumerate} 
+\item Efectivamente la altura de los árboles es del orden $O(log(n))$ y además los KDTrees creados a partir de puntos de baja discrepancia poseen una menor altura, es decir la construcción es un poco más balanceada.
+\item La construcción de KDTrees tomó tiempo $O(n log(n))$, tal como fue previsto. Aunque los tiempo entre $mean$ y $median$ es muy distancia, lo cual lo atribuimos al $overheight$ del método median.
+\item También se comprobó que las consultas de vecino más cercano se ejecutaron en tiempo O(log(n)) para todo tipo de construcción y sin importar la distribución de puntos.
+\item Se verificó que el espacio ocupado por el árbol sea del orden de $O(n)$. Todos los árboles de la misma cantidad de puntos ocupan el mismo espacio.
+\item Nuestra hipótesis sobre las diferencias sobre la construcción del árbol fue errónea, dado que en la construcción del árbol el $mean$ fue mucho menor al otro.
+\item Que los puntos estén distribuidos de una manera uniforme presentó leves mejoras en cuanto a los tiempos de medición, tal como se predijo en la hipótesis.
+\end{enumerate}
 
 
 
@@ -214,65 +276,6 @@ wow
 % ============= ANEXOS =====================
 \newpage
 \section{Anexos}
-
-\subsection{Merge function}
-\begin{lstlisting}
-static private int[] merge(int[] A, int[] B){
-        int i=0, j=0, n=A.length+B.length;
-        int[] res = new int[n];
-
-        for(int k=0; k<n; k++){
-           if(i<A.length && j<B.length){
-               if(A[i]<=B[j]){
-                   res[k] = A[i];
-                   i++;
-               }else{
-                   res[k] = B[j];
-                   j++;
-               }
-           } else if(i == A.length){ //si se acaban los elems de B
-               for(;k<n;){
-                   res[k] = B[j];
-                   k++; j++;
-               }
-           }else{
-               for(;k<n;){ //si se acaban los elems de A
-                   res[k] = A[i];
-                   k++; i++;
-               }
-           }
-        }
-        return res;
-    }
-}
-\end{lstlisting}
-\newpage
-\subsection{Partition function}
-\begin{lstlisting}
-private static int partition(int[] A, int start, int end) {
-    int index = start + new Random().nextInt(end-start);
-    int pivot = A[index];
-    int i = start, j = end;
-    while(i<j){
-        while(A[i] < pivot) i++;
-        while(A[j] > pivot) j--;
-        swap(A, i, j);
-    }
-    return i;
-}
-\end{lstlisting}
-
-\subsection{Experimentos}
-\subsubsection{Experimento 1}
-\subsubsection{Experimento 2}
-\subsubsection{Experimento 3}
-\subsubsection{Experimento 4}
-
-\subsection{Resultados}
-\subsubsection{Resultado 1}
-\subsubsection{Resultado 2}
-\subsubsection{Resultado 3}
-\subsubsection{Resultado 4}
 
 
 

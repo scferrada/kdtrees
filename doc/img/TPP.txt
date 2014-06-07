@@ -1,0 +1,60 @@
+THE GOD (Omastar) (M) @ White Herb
+Ability: Swift Swim
+Shiny: Yes
+EVs: 252 Spd / 252 SAtk / 4 HP
+Modest Nature
+- Shell Smash
+- Surf
+- Ice Beam
+- Hidden Power [Grass]
+
+Abba Yisus (Pidgeot) (M) @ Choice Band
+Ability: Tangled Feet
+Shiny: Yes
+EVs: 252 Spd / 252 Atk / 4 HP
+Jolly Nature
+- Brave Bird
+- Return
+- U-turn
+- Quick Attack
+
+AJ (Zapdos) @ Leftovers
+Ability: Static
+Shiny: Yes
+EVs: 252 SAtk / 248 HP / 8 SDef
+Modest Nature
+- Substitute
+- Roost
+- Thunderbolt
+- Heat Wave
+
+AIIIIIIIIIR (Lapras) @ Leftovers
+Ability: Water Absorb
+Shiny: Yes
+EVs: 252 Atk / 252 HP / 4 SDef
+Adamant Nature
+- Avalanche
+- Ice Shard
+- Curse
+- Waterfall
+
+King (Nidoking) @ Life Orb
+Ability: Sheer Force
+Shiny: Yes
+EVs: 252 Spd / 252 SAtk / 4 HP
+Timid Nature
+- Earth Power
+- Sludge Wave
+- Stealth Rock
+- Fire Blast
+
+ATV (Venomoth) @ Black Sludge
+Ability: Wonder Skin
+Shiny: Yes
+EVs: 252 Spd / 252 HP / 4 SAtk
+Timid Nature
+- Baton Pass
+- Bug Buzz
+- Quiver Dance
+- Sleep Powder
+

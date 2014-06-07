@@ -73,7 +73,7 @@ public class KDExperiment {
 
 
     static public void main(String[] args){
-        for(int i=8; i<=15; i++){
+        for(int i=8; i<=18; i++){
             int N = (int) Math.pow(2, i);
             List<KDPoint> randomPoints;
             List<KDPoint> lowDiscrepancyPoints;
@@ -84,7 +84,7 @@ public class KDExperiment {
             Long start, end;
             int first = 1;
             boolean doIt = true;
-            while( first<10 && doIt ){ //change to while error is higher than 5%
+            while( first<100 && doIt ){ //change to while error is higher than 5%
 
                 if (first>3)
                     doIt = firstStageErrorsAreOver5();
@@ -124,7 +124,7 @@ public class KDExperiment {
             writeFirstStageFiles(N);
             first = 1;
             doIt = true;
-            while(first<10 && doIt){ //change to while error is higher than 5%
+            while(first<100 && doIt){ //change to while error is higher than 5%
 
                 if(first>3)
                     doIt = secondStageErrorsAreOver5();
